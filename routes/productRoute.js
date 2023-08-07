@@ -6,7 +6,7 @@ const {
     updateProduct,
     deleteProduct,
 } = require("../controller/productCtrl");
-const { authMiddleware, isAdmin  } = require("../middlewares/authMiddleware");
+const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware");
 const router = express.Router();
 
 router.post("/", authMiddleware, isAdmin, createProduct);
