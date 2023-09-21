@@ -333,7 +333,9 @@ const userCart = asyncHandler(async (req, res) => {
             object.product = cart[i]._id;
             object.count = cart[i].count;
             object.color = cart[i].color;
-            let getPrice = await Product.findById(cart[i]._id).select("price").exec();
+            let getPrice = await Product.findById(cart[i]._id)
+                .select("price")
+                .exec();
             object.price = getPrice.price;
             products.push(object);
         }
@@ -356,7 +358,9 @@ const getUserCart = asyncHandler(async (req, res) => {
     const { _id } = req.user;
     validateMongoDbId(_id);
     try {
-        const cart = await Cart.findOne({ orderby: _id }).populate("products.product");
+        const cart = await Cart.findOne({ orderby: _id }).populate(
+            "products.product",
+        );
         res.json(cart);
     } catch (error) {
         throw new Error(error);
@@ -384,9 +388,18 @@ const applyCoupon = asyncHandler(async (req, res) => {
         throw new Error("Invalid Coupon");
     }
     const user = await User.findOne({ _id });
-    let { cartTotal } = await Cart.findOne({ orderby: user._id }).populate("products.product");
-    let totalAfterDiscount = (cartTotal - (cartTotal * validCoupon.discount) / 100).toFixed(2);
-    await Cart.findOneAndUpdate({ orderby: user._id }, { totalAfterDiscount }, { new: true });
+    let { cartTotal } = await Cart.findOne({ orderby: user._id }).populate(
+        "products.product",
+    );
+    let totalAfterDiscount = (
+        cartTotal -
+        (cartTotal * validCoupon.discount) / 100
+    ).toFixed(2);
+    await Cart.findOneAndUpdate(
+        { orderby: user._id },
+        { totalAfterDiscount },
+        { new: true },
+    );
     res.json(totalAfterDiscount);
 });
 
@@ -421,7 +434,9 @@ const createOrder = asyncHandler(async (req, res) => {
             return {
                 updateOne: {
                     filter: { _id: item.product._id },
-                    update: { $inc: { quantity: -item.count, sold: +item.count } },
+                    update: {
+                        $inc: { quantity: -item.count, sold: +item.count },
+                    },
                 },
             };
         });
@@ -436,8 +451,23 @@ const getOrders = asyncHandler(async (req, res) => {
     const { _id } = req.user;
     validateMongoDbId(_id);
     try {
-        const userorders = await Order.findOne({ orderby: _id }).populate("products.product").exec();
+        const userorders = await Order.findOne({ orderby: _id })
+            .populate("products.product")
+            .populate("orderby")
+            .exec();
         res.json(userorders);
+    } catch (error) {
+        throw new Error(error);
+    }
+});
+
+const getAllOrders = asyncHandler(async (req, res) => {
+    try {
+        const alluserorders = await Order.find()
+            .populate("products.product")
+            .populate("orderby")
+            .exec();
+        res.json(alluserorders);
     } catch (error) {
         throw new Error(error);
     }
@@ -488,4 +518,5 @@ module.exports = {
     createOrder,
     getOrders,
     updateOrderStatus,
+    getAllOrders,
 };
