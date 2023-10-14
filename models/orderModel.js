@@ -64,28 +64,32 @@ var orderSchema = new mongoose.Schema(
                     type: Number,
                     required: true,
                 },
-                price:{
-                    type :Number ,
-                    required: true
-                }
+                price: {
+                    type: Number,
+                    required: true,
+                },
             },
         ],
-        paidAt:{
+        paidAt: {
             type: Date,
-            default: Date.now()
+            default: Date.now(),
         },
-        totalPrice:{
-            type: Number,
-            required:true
-        },
-        totalPriceAfterDiscount:{
-            type: Number,
-            required: true
-        },
-        orderStatus:{
+        month: {
             type: String,
-            default:"Ordered"
-        }
+            default: new Date().getMonth(),
+        },
+        totalPrice: {
+            type: Number,
+            required: true,
+        },
+        totalPriceAfterDiscount: {
+            type: Number,
+            required: true,
+        },
+        orderStatus: {
+            type: String,
+            default: "Ordered",
+        },
     },
     {
         timestamps: true,
