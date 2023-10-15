@@ -500,17 +500,17 @@ const getOrders = asyncHandler(async (req, res) => {
     }
 });
 
-const getAllOrders = asyncHandler(async (req, res) => {
-    try {
-        const alluserorders = await Order.find()
-            .populate("products.product")
-            .populate("orderby")
-            .exec();
-        res.json(alluserorders);
-    } catch (error) {
-        throw new Error(error);
-    }
-});
+// const getAllOrders = asyncHandler(async (req, res) => {
+//     try {
+//         const alluserorders = await Order.find()
+//             .populate("products.product")
+//             .populate("orderby")
+//             .exec();
+//         res.json(alluserorders);
+//     } catch (error) {
+//         throw new Error(error);
+//     }
+// });
 
 const getOrderByUserId = asyncHandler(async (req, res) => {
     const { id } = req.params;
@@ -562,6 +562,43 @@ const getMyOrders = asyncHandler(async (req, res) => {
     }
 });
 
+const getAllOrders = asyncHandler(async (req, res) => {
+    try {
+        const orders = await Order.find().populate("user");
+        res.json({
+            orders,
+        });
+    } catch (error) {
+        throw new Error(error);
+    }
+});
+
+const getSingleOrders = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    try {
+        const orders = await Order.findOne({ _id: id }).populate("orderItems.product").populate("orderItems.color");
+        res.json({
+            orders,
+        });
+    } catch (error) {
+        throw new Error(error);
+    }
+});
+
+const updateOrder = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    try {
+        const orders = await Order.findById(id);
+        orders.orderStatus = req.body.status
+        await orders.save()
+        res.json({
+            orders,
+        });
+    } catch (error) {
+        throw new Error(error);
+    }
+});
+
 const getMonthWiseOrderIncome = asyncHandler(async (req, res) => {
     let monthNames = [
         "January",
@@ -603,9 +640,8 @@ const getMonthWiseOrderIncome = asyncHandler(async (req, res) => {
             },
         },
     ]);
-    res.json(data)
+    res.json(data);
 });
-
 
 const getYearlyTotalOrders = asyncHandler(async (req, res) => {
     let monthNames = [
@@ -641,12 +677,12 @@ const getYearlyTotalOrders = asyncHandler(async (req, res) => {
         {
             $group: {
                 _id: null,
-                count: { $sum: 1},
-                amount:{$sum:"$totalPriceAfterDiscount"}
+                count: { $sum: 1 },
+                amount: { $sum: "$totalPriceAfterDiscount" },
             },
         },
     ]);
-    res.json(data)
+    res.json(data);
 });
 
 module.exports = {
@@ -681,4 +717,7 @@ module.exports = {
     getMyOrders,
     getMonthWiseOrderIncome,
     getYearlyTotalOrders,
+    getAllOrders,
+    getSingleOrders,
+    updateOrder,
 };
