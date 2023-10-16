@@ -362,6 +362,21 @@ const removeProductFromCart = asyncHandler(async (req, res) => {
     }
 });
 
+const emptyCart = asyncHandler(async (req, res) => {
+    const { _id } = req.user;
+    
+    validateMongoDbId(_id);
+    try {
+        const deleteCart = await Cart.deleteMany({
+            userId: _id,
+            
+        });
+        res.json(deleteCart);
+    } catch (error) {
+        throw new Error(error);
+    }
+});
+
 const updateProductQuantityFromCart = asyncHandler(async (req, res) => {
     const { _id } = req.user;
     const { cartItemId, newQuantity } = req.params;
@@ -406,17 +421,17 @@ const createOrder = asyncHandler(async (req, res) => {
     }
 });
 
-const emptyCart = asyncHandler(async (req, res) => {
-    const { _id } = req.user;
-    validateMongoDbId(_id);
-    try {
-        const user = await User.findOne({ _id });
-        const cart = await Cart.findOneAndRemove({ orderby: user._id });
-        res.json(cart);
-    } catch (error) {
-        throw new Error(error);
-    }
-});
+// const emptyCart = asyncHandler(async (req, res) => {
+//     const { _id } = req.user;
+//     validateMongoDbId(_id);
+//     try {
+//         const user = await User.findOne({ _id });
+//         const cart = await Cart.findOneAndRemove({ orderby: user._id });
+//         res.json(cart);
+//     } catch (error) {
+//         throw new Error(error);
+//     }
+// });
 
 const applyCoupon = asyncHandler(async (req, res) => {
     const { coupon } = req.body;
@@ -720,4 +735,5 @@ module.exports = {
     getAllOrders,
     getSingleOrders,
     updateOrder,
+    emptyCart,
 };

@@ -80,6 +80,7 @@ router.delete(
     authMiddleware,
     updateProductQuantityFromCart,
 );
+router.delete("/empty-cart", authMiddleware, emptyCart);
 router.delete("/:id", deleteaUser);
 
 router.put("/edit-user", authMiddleware, updatedUser);
