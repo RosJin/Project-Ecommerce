@@ -19,10 +19,6 @@ var cartSchema = new mongoose.Schema(
             type: Number,
             required: true,
         },
-        color: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Color",
-        },
     },
     {
         timestamps: true,
