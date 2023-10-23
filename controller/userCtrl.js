@@ -337,8 +337,7 @@ const getUserCart = asyncHandler(async (req, res) => {
     const { _id } = req.user;
     validateMongoDbId(_id);
     try {
-        const cart = await Cart.find({ userId: _id })
-            .populate("productId")
+        const cart = await Cart.find({ userId: _id }).populate("productId");
         res.json(cart);
     } catch (error) {
         throw new Error(error);
@@ -362,12 +361,11 @@ const removeProductFromCart = asyncHandler(async (req, res) => {
 
 const emptyCart = asyncHandler(async (req, res) => {
     const { _id } = req.user;
-    
+
     validateMongoDbId(_id);
     try {
         const deleteCart = await Cart.deleteMany({
             userId: _id,
-            
         });
         res.json(deleteCart);
     } catch (error) {
@@ -565,7 +563,7 @@ const getMyOrders = asyncHandler(async (req, res) => {
     try {
         const orders = await Order.find({ user: _id })
             .populate("user")
-            .populate("orderItems.product")
+            .populate("orderItems.product");
         res.json({
             orders,
         });
@@ -588,7 +586,9 @@ const getAllOrders = asyncHandler(async (req, res) => {
 const getSingleOrders = asyncHandler(async (req, res) => {
     const { id } = req.params;
     try {
-        const orders = await Order.findOne({ _id: id }).populate("orderItems.product")
+        const orders = await Order.findOne({ _id: id }).populate(
+            "orderItems.product",
+        );
         res.json({
             orders,
         });
@@ -601,8 +601,8 @@ const updateOrder = asyncHandler(async (req, res) => {
     const { id } = req.params;
     try {
         const orders = await Order.findById(id);
-        orders.orderStatus = req.body.status
-        await orders.save()
+        orders.orderStatus = req.body.status;
+        await orders.save();
         res.json({
             orders,
         });
@@ -613,18 +613,18 @@ const updateOrder = asyncHandler(async (req, res) => {
 
 const getMonthWiseOrderIncome = asyncHandler(async (req, res) => {
     let monthNames = [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December",
+        "Tháng Một",
+        "Tháng Hai",
+        "Tháng Ba",
+        "Tháng Tư",
+        "Tháng Năm",
+        "Tháng Sáu",
+        "Tháng Bảy",
+        "Tháng Tám",
+        "Tháng Chín",
+        "Tháng Mười",
+        "Tháng Mười Một",
+        "Tháng Mười Hai",
     ];
     let d = new Date();
     let endDate = "";
@@ -657,18 +657,18 @@ const getMonthWiseOrderIncome = asyncHandler(async (req, res) => {
 
 const getYearlyTotalOrders = asyncHandler(async (req, res) => {
     let monthNames = [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December",
+        "Tháng Một",
+        "Tháng Hai",
+        "Tháng Ba",
+        "Tháng Tư",
+        "Tháng Năm",
+        "Tháng Sáu",
+        "Tháng Bảy",
+        "Tháng Tám",
+        "Tháng Chín",
+        "Tháng Mười",
+        "Tháng Mười Một",
+        "Tháng Mười Hai",
     ];
     let d = new Date();
     let endDate = "";

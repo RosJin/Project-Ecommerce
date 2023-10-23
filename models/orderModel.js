@@ -83,7 +83,7 @@ var orderSchema = new mongoose.Schema(
         },
         orderStatus: {
             type: String,
-            default: "Ordered",
+            default: "Đã đặt hàng",
         },
     },
     {
